@@ -15,5 +15,5 @@ def saludo(username):
     response_mensaje = "Hola %s, bienvenido a la pagina de prueba" % username
     return response_mensaje
 
-if __name__== "_main":
+if __name__== "__main__":
     app.run(host="localhost", debug=True)
