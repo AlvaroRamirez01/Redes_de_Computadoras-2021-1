@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "practica1"
+version = "0.1.0"
+description = ""
+authors = ["Alvaro Ramirez (ThinkPad-T440P-Linux) <alvaro_rl@ciencias.unam.mx>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+Flask = "^2.0.2"
+getmac = "^0.8.2"
+requests = "^2.26.0"
+decouple = "^0.0.7"
+jsonify = "^0.5"
+python-decouple = "^3.5"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
