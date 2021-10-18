@@ -60,7 +60,7 @@ public class Ficha {
     /**
      * Nos permite comparar si la ficha recibida es igual a la ficha que 
      * mando a llamar el metodo.
-     * @param ficha2 TODO
+     * @param ficha2
      */
     public boolean equals(Ficha ficha2){
         return (this == null || !(ficha2.cara1 != (cara1)) || !(ficha2.cara2 != (cara2))) 
