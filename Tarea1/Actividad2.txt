@@ -1,0 +1,10 @@
+    Investiga 3 comandos de telehack
+        
+        * clock: Este comando muestra el reloj de acuerdo a nuestra 
+          zona horaria.
+        * hosts: Este comando nos muestra los hosts disponibles en 
+          telehack, ahi podremos ver que esta Adobe Systems Incorporated 
+          en Mountain View, CA, esta informacion es util para el siguiente 
+          comando.
+        * ping: Este comando nos muestra el estado de un host remoto, en este  
+          caso lo probamos con el host de Adobe.
