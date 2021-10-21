@@ -53,7 +53,7 @@ public class Ficha {
      * Regresa la representacion en cadena de una ficha.
      */
     @Override public String toString(){
-        String cadena = String.format("[%d,%d]", this.cara1,this.cara2);
+        String cadena = String.format("[%d|%d]", this.cara1,this.cara2);
         return cadena;
     }
 
