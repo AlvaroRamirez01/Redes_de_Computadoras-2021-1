@@ -67,4 +67,14 @@ public class Ficha {
             ? false : true;
     }
 
+    /**
+     * Nos permite voltear la forma de la ficha, es decir, si tenemos la 
+     * ficha [1|2] entonces podemos tener la ficha [2|1]
+     */
+
+    public void giraFicha(int cara1, int cara2){
+        this.setCara1(cara2);
+        this.setCara2(cara1);
+    }
+
 }
