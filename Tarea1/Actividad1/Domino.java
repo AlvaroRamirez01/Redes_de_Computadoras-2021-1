@@ -1,8 +1,17 @@
 package Tarea1.Actividad1;
 
+import java.net.Socket;
+import java.net.ServerSocket;
 import java.util.LinkedList;
 import java.util.Random;
 
+/**
+ * @author Alvaro Ramirez Lopez
+ * @version 1.0
+ * @since 1.0
+ * Clase que representa un juego de domino, en el cual se juega con dos jugadores
+ * en este caso, un jugador humano y un jugador automatico.
+ */
 public class Domino {
 
     /** Generamos las 28 fichas que usaremos para el domino */
@@ -49,6 +58,10 @@ public class Domino {
     private static LinkedList<Ficha> fichasParaComer = new LinkedList<Ficha>();
     /** Referencia de random que nos ayudara a generar numeros aleatorios. */
     private static Random random = new Random();
+    /** ServerSocket del juego */
+    private static ServerSocket serverSocket;
+    /** ClientSocket del juego */
+    // private static Socket jugador;
 
     public static void main(String[] args) {
 
@@ -59,6 +72,7 @@ public class Domino {
         for (Ficha ficha : fichasParaComer) {
             System.out.println(ficha.toString());
         }
+        
     }
 
     /**
