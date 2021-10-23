@@ -1,5 +1,7 @@
 package Tarea1.Actividad1;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.lang.System.Logger;
 import java.net.Socket;
@@ -26,13 +28,16 @@ public class Jugador {
     public static void main(String[] args) {
         try {
             cliente = new Socket("localhost", 5000);
-            System.out.println("Conectado al servidor");
-            System.out.println("Introduzca su nombre de usuario: ");
-            String nombre = teclado.nextLine();
-            System.out.println("Introduzca su contraseña: ");
-            String contrasena = teclado.nextLine();
+            System.out.println("Conectado al servidor del juego");
+            //para escribir hacia el servidor
+            //DataOutputStream salida = new DataOutputStream(cliente.getOutputStream());
+            //para leer del servidor
+            //DataInputStream entrada = new DataInputStream(cliente.getInputStream());
+            DataInputStream entrada = new DataInputStream(cliente.getInputStream());
+            String mensajeServidor = entrada.readUTF();
+            System.out.println(mensajeServidor);
         } catch (IOException e) {
-            System.out.println("Error al conectar con el servidor");
+            System.out.println("Error al conectar con el servidor del juego");
             // Logger.getLogger(Jugador.class.getName()).log(Level.SEVERE, null, e);
         }
     }
