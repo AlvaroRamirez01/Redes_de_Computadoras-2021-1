@@ -1,6 +1,9 @@
 package Tarea1.Actividad1;
 
 import java.net.Socket;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.LinkedList;
 import java.util.Random;
@@ -60,19 +63,36 @@ public class Domino {
     private static Random random = new Random();
     /** ServerSocket del juego */
     private static ServerSocket serverSocket;
+    /** Bandera que nos ayudara a saber si el juego ha terminado o no */
+    private static boolean juegoTerminado;
     /** ClientSocket del juego */
-    // private static Socket jugador;
+    private static Socket jugador;
+
+    private static DataOutputStream out;
+    private static DataInputStream in;
+
 
     public static void main(String[] args) {
 
-        generaFichas();
-        reparteFichas(fichasJugador1,2);
-        reparteFichas(fichasMaquina,1);
-        System.out.println("las fichas que quedan son");
-        for (Ficha ficha : fichasParaComer) {
-            System.out.println(ficha.toString());
+        try {
+            serverSocket = new ServerSocket(5000);
+            jugador = serverSocket.accept();
+            System.out.println("------ Jugador conectado ------");
+            String mensajeCliente = "--------- Juego Iniciado ---------";
+            out = new DataOutputStream(jugador.getOutputStream());
+            out.writeUTF(mensajeCliente);
+        } catch (IOException e) {
+            System.out.println("Error al conectar con el cliente");
         }
         
+        juegoTerminado = false;
+        // Generamos las 28 fichas que usaremos para el domino
+        generaFichas();
+        // repartimos las fichas para el jugador 1
+        reparteFichas(fichasJugador1,7);
+        // repartimos las fichas para la maquina
+        reparteFichas(fichasMaquina,7);
+        comienzaJuego();
     }
 
     /**
@@ -175,6 +195,50 @@ public class Domino {
         for (Ficha ficha : f) {
             System.out.println(ficha.toString());
         }
+    }
+    /**
+     * Este metodo nos ayuda a comenzar el juego, siempre cuando nos 
+     * comuniquemos con el cliente mandaremos 2 cadenas, una sera 
+     * el tablero del domino y la segunda seran las fichas que tiene la persona.
+     * 
+     */
+    private static void comienzaJuego(){
+        while (juegoTerminado == false && fichasParaComer.isEmpty() == false) {
+            //imprimimos el tablero
+            String tablero = imprimeTablero();
+            System.out.println(tablero);
+            // enviamos las fichas del jugador 1
+            String fichasJugador = imprimeFichasJugador1();
+            try {
+                out=new DataOutputStream(jugador.getOutputStream());
+                out.writeUTF(fichasJugador);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            
+
+            // esperamos a que el cliente decida que hacer
+            int opcion = 0;
+            /* switch (opcion) {
+                case 1: agregaFicha(1);   
+         */}
+    } 
+
+
+    private static String imprimeTablero(){
+        String cadena = "Tablero del domino\n";
+        for (Ficha ficha : tablero) {
+            cadena = cadena + " "+ficha.toString()+" ";
+        }
+        return cadena;
+    }
+
+    private static String imprimeFichasJugador1(){
+        String cadena = "Estas son las fichas del jugador 1\n";
+        for (Ficha ficha : fichasJugador1) {
+            cadena = cadena + " "+ficha.toString()+" ";
+        }
+        return cadena;
     }
 
 }
