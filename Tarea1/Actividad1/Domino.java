@@ -70,11 +70,14 @@ public class Domino {
     private static boolean juegoTerminado;
     /** ClientSocket del juego */
     private static Socket jugador;
-
+    /** Flujo de salida hacia el cliente */
     private static DataOutputStream out;
+    /** Flujo de entrada desde el cliente */
     private static DataInputStream in;
 
-
+    /**
+     * Metodo principal que inicia el juego.
+     */
     public static void main(String[] args) {
         System.out.println("----------- Esperando jugador... -----------");
         try {
@@ -96,9 +99,7 @@ public class Domino {
         }
         } catch (IOException e) {
             System.out.println("Error al conectar con el cliente");
-        }
-        
-        
+        }   
     }
 
     /**
@@ -202,6 +203,8 @@ public class Domino {
             System.out.println(ficha.toString());
         }
     }
+    
+
     /**
      * Este metodo nos ayuda a comenzar el juego, siempre cuando nos 
      * comuniquemos con el cliente mandaremos 2 cadenas, una sera 
@@ -240,6 +243,7 @@ public class Domino {
                     fichasParaComer.remove(aleatorio);
                     fichasJugador1.add(ficha);
                     System.out.println(String.format("Se comio la ficha correctamente\n toca el turno a la maquina"));
+                    juegaMaquina();
                     comienzaJuego();
                     break;
                 case 3:
@@ -252,12 +256,54 @@ public class Domino {
         } catch (IOException e) {
             Logger.getLogger(Domino.class.getName()).log(Level.SEVERE, null, e);
         }
-            // esperamos a que el cliente decida que hacer
-            // int opcion = 0;
-            /* switch (opcion) {
-                case 1: agregaFicha(1);   
-         */
     } 
+
+    /**
+     * Este metodo nos ayuda a implementar el turno de la maquina en el juego
+     */
+    private static void juegaMaquina() {
+        Ficha cabeza;
+        Ficha cola;
+        Ficha fichaAColocar=null;
+
+        if(tablero.size()==1){
+            cabeza = cola = tablero.get(0);
+        }else{
+            cabeza = tablero.getFirst();
+            cola = tablero.getLast();
+        }
+        for (Ficha ficha : fichasMaquina) {
+            if(ficha.getCara2()==cabeza.getCara1()){
+                fichaAColocar = ficha;
+                tablero.addFirst(fichaAColocar);
+                return;
+            }
+            if(ficha.getCara1()==cola.getCara2()){
+                fichaAColocar = ficha;
+                tablero.addLast(fichaAColocar);
+                return;
+            }
+        }
+        
+        for (Ficha ficha : fichasMaquina){
+            ficha.giraFicha(ficha.getCara1(), ficha.getCara2());
+            if(ficha.getCara2()==cabeza.getCara1()){
+                fichaAColocar = ficha;
+                tablero.addFirst(fichaAColocar);
+                return;
+            }
+            if(ficha.getCara1()==cola.getCara2()){
+                fichaAColocar = ficha;
+                tablero.addLast(fichaAColocar);
+                return;
+            }
+        }
+        if(!fichasParaComer.isEmpty()&&fichaAColocar==null){
+            System.out.println("La maquina no tiene fichas para tirar, comera una ficha");
+            // comemos una ficha para la maquina y pasamos el turno al jugador
+            reparteFichas(fichasMaquina,1,"Maquina");
+        }   
+    }
 
     /**
      * Este metodo nos ayuda a agregar una ficha al tablero
@@ -287,7 +333,8 @@ public class Domino {
                 tablero.addLast(fichaAAgregar);
             }
         }
-        System.out.println("Se agrego la ficha correctamente");
+        System.out.println("Se agrego la ficha correctamente\n Ahora le toca jugar a la maquina");
+        juegaMaquina();
         comienzaJuego();
     }
 
