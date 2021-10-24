@@ -1,4 +1,4 @@
-package Tarea1.Actividad1;
+// package Tarea1.Actividad1;
 
 public class Ficha {
     
