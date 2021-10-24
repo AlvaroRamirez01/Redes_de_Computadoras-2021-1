@@ -27,6 +27,7 @@ public class Jugador {
 
     /**
      * Constructor de la clase Jugador
+     * @throws IOException
      */
     public static void main(String[] args) {
         try {
@@ -46,6 +47,10 @@ public class Jugador {
         }
     }
 
+    /**
+     * Metodo que se encarga de iniciar el juego
+     * @throws IOException
+     */
     private static void juegoIniciado() {
         try {
             entrada = new DataInputStream(cliente.getInputStream());
@@ -60,6 +65,11 @@ public class Jugador {
     
     }
 
+    /**
+     * Pequeño menu para el jugador, en este menu contiene las acciones principales del domino
+     * ya sea que quiera poner una ficha, comer una ficha o rendirse.
+     * @throws IOException
+     */
     private static void menuJugador(){
         System.out.println("¿Que desea hacer?");
         System.out.println("1. Tirar una ficha");
@@ -95,6 +105,12 @@ public class Jugador {
 
     }
 
+
+    /**
+     * Este metodo nos ayuda a tirar una ficha y depsues comunicar al servidor
+     * cual ficha fue la que se tiro y su orientacion.
+     * @throws IOException
+     */
     private static void tirarFicha(){
         try {
             System.out.println("De derecha a izquierda cuente y seleccione cual ficha desea tirar");
@@ -109,25 +125,31 @@ public class Jugador {
             salida.writeUTF(lado);
             System.out.println("Ficha tirada, ahora le toca al servidor.");
             juegoIniciado();
-        } catch (Exception e) {
-            //TODO: handle exception
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
 
     }
-
+    
+    /**
+     * Este metodo lo que hace es indicar que se comio una ficha.
+     */
     private static void comerFicha(){
         System.out.println("\nSe procede a comer la ficha, se agregara al final...\n");
         juegoIniciado(); 
     }
 
+    /**
+     * Metodo que nos ayuda en caso de que el jugador se rinda.
+     */
     private static void redirse(){
         System.out.println("Usted se ha rendido, hasta luego.");
         try {
             salida = new DataOutputStream(cliente.getOutputStream());
             salida.writeInt(3);
-        } catch (Exception e) {
-            //TODO: handle exception
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
     
