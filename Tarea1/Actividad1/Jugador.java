@@ -1,4 +1,4 @@
-package Tarea1.Actividad1;
+// package Tarea1.Actividad1;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -21,6 +21,9 @@ public class Jugador {
     /** Socket para la conexion */
     private static Socket cliente;
     /** Objeto para enviar mensajes al servidor */
+    private static DataOutputStream salida;
+    /** Objeto para recibir mensajes del servidor */
+    private static DataInputStream entrada;
 
     /**
      * Constructor de la clase Jugador
@@ -33,12 +36,31 @@ public class Jugador {
             //DataOutputStream salida = new DataOutputStream(cliente.getOutputStream());
             //para leer del servidor
             //DataInputStream entrada = new DataInputStream(cliente.getInputStream());
-            DataInputStream entrada = new DataInputStream(cliente.getInputStream());
+            entrada = new DataInputStream(cliente.getInputStream());
             String mensajeServidor = entrada.readUTF();
             System.out.println(mensajeServidor);
+            juegoIniciado();
         } catch (IOException e) {
             System.out.println("Error al conectar con el servidor del juego");
             // Logger.getLogger(Jugador.class.getName()).log(Level.SEVERE, null, e);
         }
     }
+
+    private static void juegoIniciado() {
+        try {
+            entrada = new DataInputStream(cliente.getInputStream());
+            String fichasJugador = entrada.readUTF();
+            System.out.println(fichasJugador);
+            System.out.println("mande una orden al servidor");
+            int orden = teclado.nextInt();
+            salida = new DataOutputStream(cliente.getOutputStream());
+            salida.writeInt(orden);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    
+    }
+    
 }
