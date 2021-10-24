@@ -31,14 +31,14 @@ public class Jugador {
     public static void main(String[] args) {
         try {
             cliente = new Socket("localhost", 5000);
-            System.out.println("Conectado al servidor del juego");
+            System.out.println("Conectado al servidor del juego\n");
             //para escribir hacia el servidor
             //DataOutputStream salida = new DataOutputStream(cliente.getOutputStream());
             //para leer del servidor
             //DataInputStream entrada = new DataInputStream(cliente.getInputStream());
             entrada = new DataInputStream(cliente.getInputStream());
             String mensajeServidor = entrada.readUTF();
-            System.out.println(mensajeServidor);
+            System.out.println(mensajeServidor+"\n");
             juegoIniciado();
         } catch (IOException e) {
             System.out.println("Error al conectar con el servidor del juego");
@@ -51,16 +51,85 @@ public class Jugador {
             entrada = new DataInputStream(cliente.getInputStream());
             String fichasJugador = entrada.readUTF();
             System.out.println(fichasJugador);
-            System.out.println("mande una orden al servidor");
-            int orden = teclado.nextInt();
-            salida = new DataOutputStream(cliente.getOutputStream());
-            salida.writeInt(orden);
-
+            menuJugador();
+            
         } catch (IOException e) {
             e.printStackTrace();
         }
 
     
     }
+
+    private static void menuJugador(){
+        System.out.println("¿Que desea hacer?");
+        System.out.println("1. Tirar una ficha");
+        System.out.println("2. Comer una ficha");
+        System.out.println("3. Redirse");
+        int opcion = teclado.nextInt();
+        switch (opcion) {
+            case 1: 
+                try {
+                    salida = new DataOutputStream(cliente.getOutputStream());
+                    salida.writeInt(1);
+                    tirarFicha();
+                } catch (Exception e) {
+                    //TODO: handle exception
+                }
+                break;
+            case 2: 
+                try {
+                    salida = new DataOutputStream(cliente.getOutputStream());
+                    salida.writeInt(2);
+                    comerFicha();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
+            case 3:
+                redirse();
+                break;
+            default:
+                System.out.println("Opcion no valida, abortando juego...");
+                break;
+        }
+
+    }
+
+    private static void tirarFicha(){
+        try {
+            System.out.println("De derecha a izquierda cuente y seleccione cual ficha desea tirar");
+            int fichaATirar = teclado.nextInt();
+            fichaATirar = fichaATirar - 1;
+            salida = new DataOutputStream(cliente.getOutputStream());
+            salida.writeInt(fichaATirar);
+            System.out.println("¿En que lado quier poner la ficha?(Izq|Der), seleccione L o R");
+            teclado = new Scanner(System.in);
+            String lado = teclado.nextLine();
+            salida = new DataOutputStream(cliente.getOutputStream());
+            salida.writeUTF(lado);
+            System.out.println("Ficha tirada, ahora le toca al servidor.");
+            juegoIniciado();
+        } catch (Exception e) {
+            //TODO: handle exception
+        }
+
+
+    }
+
+    private static void comerFicha(){
+        System.out.println("\nSe procede a comer la ficha, se agregara al final...\n");
+        juegoIniciado(); 
+    }
+
+    private static void redirse(){
+        System.out.println("Usted se ha rendido, hasta luego.");
+        try {
+            salida = new DataOutputStream(cliente.getOutputStream());
+            salida.writeInt(3);
+        } catch (Exception e) {
+            //TODO: handle exception
+        }
+    }
+    
     
 }
