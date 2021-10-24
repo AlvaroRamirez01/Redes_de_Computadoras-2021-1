@@ -259,6 +259,11 @@ public class Domino {
          */
     } 
 
+    /**
+     * Este metodo nos ayuda a agregar una ficha al tablero
+     * @param i es la referencia de la ficha del jugador que se va a agregar.
+     * @param s es el lado del tablero donde se va a colocar la ficha.
+     */
     private static void agregaFicha(int i, String s) {
         if (s.equals("L")) {
             Ficha fichaAAgregar = fichasJugador1.get(i);
@@ -286,6 +291,9 @@ public class Domino {
         comienzaJuego();
     }
 
+    /** 
+     * Este metodo nos ayuda a imprimir el tablero del juego
+     */
     private static String imprimeTablero(){
         String cadena = "---------- Tablero del domino ----------\n";
         for (Ficha ficha : tablero) {
@@ -295,6 +303,9 @@ public class Domino {
         return cadena;
     }
 
+    /**
+     * Este metodo nos ayuda a imprimir las fichas del jugador 1
+     */
     private static String imprimeFichasJugador1(){
         String cadena = "Estas son las fichas del jugador 1\n";
         for (Ficha ficha : fichasJugador1) {
