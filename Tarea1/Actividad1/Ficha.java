@@ -1,5 +1,12 @@
 // package Tarea1.Actividad1;
 
+/**
+ * @author Alvaro Ramirez Lopez
+ * @version 1.0
+ * @since 1.0
+ * Clase que representa una ficha de un juego de domino.
+ */
+
 public class Ficha {
     
     /* Cara 1 de la ficha */
@@ -71,7 +78,6 @@ public class Ficha {
      * Nos permite voltear la forma de la ficha, es decir, si tenemos la 
      * ficha [1|2] entonces podemos tener la ficha [2|1]
      */
-
     public void giraFicha(int cara1, int cara2){
         this.setCara1(cara2);
         this.setCara2(cara1);
