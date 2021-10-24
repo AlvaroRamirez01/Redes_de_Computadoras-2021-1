@@ -1,4 +1,4 @@
-package Tarea1.Actividad1;
+// package Tarea1.Actividad1;
 
 import java.net.Socket;
 import java.io.DataInputStream;
@@ -7,6 +7,9 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.LinkedList;
 import java.util.Random;
+import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Alvaro Ramirez Lopez
@@ -73,7 +76,7 @@ public class Domino {
 
 
     public static void main(String[] args) {
-
+        System.out.println("----------- Esperando jugador... -----------");
         try {
             serverSocket = new ServerSocket(5000);
             jugador = serverSocket.accept();
@@ -81,18 +84,21 @@ public class Domino {
             String mensajeCliente = "--------- Juego Iniciado ---------";
             out = new DataOutputStream(jugador.getOutputStream());
             out.writeUTF(mensajeCliente);
+            juegoTerminado = false;
+        // Generamos las 28 fichas que usaremos para el domino
+        generaFichas();
+        // repartimos las fichas para el jugador 1
+        reparteFichas(fichasJugador1,7,"Jugador");
+        // repartimos las fichas para la maquina
+        reparteFichas(fichasMaquina,7,"Maquina");
+        while(juegoTerminado == false){
+            comienzaJuego();
+        }
         } catch (IOException e) {
             System.out.println("Error al conectar con el cliente");
         }
         
-        juegoTerminado = false;
-        // Generamos las 28 fichas que usaremos para el domino
-        generaFichas();
-        // repartimos las fichas para el jugador 1
-        reparteFichas(fichasJugador1,7);
-        // repartimos las fichas para la maquina
-        reparteFichas(fichasMaquina,7);
-        comienzaJuego();
+        
     }
 
     /**
@@ -179,7 +185,7 @@ public class Domino {
     /**
      * Este metodo nos ayuda a repartir las fichas
      */
-    private static void reparteFichas(LinkedList<Ficha> f, int numeroDeFichas){
+    private static void reparteFichas(LinkedList<Ficha> f, int numeroDeFichas, String s){
         int i = 0;
         int tamano = fichasParaComer.size();
 
@@ -191,7 +197,7 @@ public class Domino {
             tamano--;
             i++;
         }
-        System.out.println(String.format("Se repartireron %d fichas",numeroDeFichas));
+        System.out.println(String.format("Se repartireron %d fichas a %s",numeroDeFichas,s));
         for (Ficha ficha : f) {
             System.out.println(ficha.toString());
         }
@@ -203,33 +209,46 @@ public class Domino {
      * 
      */
     private static void comienzaJuego(){
-        while (juegoTerminado == false && fichasParaComer.isEmpty() == false) {
+        // esto iria en el while 
+        // juegoTerminado == false || fichasParaComer.isEmpty() == false
+        int i = 0;
             //imprimimos el tablero
             String tablero = imprimeTablero();
             System.out.println(tablero);
             // enviamos las fichas del jugador 1
             String fichasJugador = imprimeFichasJugador1();
+            fichasJugador=tablero+"\n"+fichasJugador+"\n";
             try {
                 out=new DataOutputStream(jugador.getOutputStream());
                 out.writeUTF(fichasJugador);
+                juegoTerminado= true;
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            
+            System.out.println("Esperando respuesta del jugador 1...");
+            try {
+                in = new DataInputStream(jugador.getInputStream());
+                int mensajeJugador = in.readInt();
+                System.out.println(String.format("El jugador 1 respondio: %d",mensajeJugador));
+            } catch (IOException e) {
+                Logger.getLogger(Domino.class.getName()).log(Level.SEVERE, null, e);
+            }
+            i++;
 
             // esperamos a que el cliente decida que hacer
-            int opcion = 0;
+            // int opcion = 0;
             /* switch (opcion) {
                 case 1: agregaFicha(1);   
-         */}
+         */
     } 
 
 
     private static String imprimeTablero(){
-        String cadena = "Tablero del domino\n";
+        String cadena = "---------- Tablero del domino ----------\n";
         for (Ficha ficha : tablero) {
-            cadena = cadena + " "+ficha.toString()+" ";
+            cadena =cadena + " "+ficha.toString()+" ";
         }
+        cadena = cadena + "\n---------- Tablero del domino ----------\n";
         return cadena;
     }
 
