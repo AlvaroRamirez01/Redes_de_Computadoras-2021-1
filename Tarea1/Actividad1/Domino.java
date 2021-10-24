@@ -211,30 +211,47 @@ public class Domino {
     private static void comienzaJuego(){
         // esto iria en el while 
         // juegoTerminado == false || fichasParaComer.isEmpty() == false
-        int i = 0;
+        try { 
             //imprimimos el tablero
             String tablero = imprimeTablero();
             System.out.println(tablero);
             // enviamos las fichas del jugador 1
             String fichasJugador = imprimeFichasJugador1();
             fichasJugador=tablero+"\n"+fichasJugador+"\n";
-            try {
-                out=new DataOutputStream(jugador.getOutputStream());
-                out.writeUTF(fichasJugador);
-                juegoTerminado= true;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            out=new DataOutputStream(jugador.getOutputStream());
+            out.writeUTF(fichasJugador);
             System.out.println("Esperando respuesta del jugador 1...");
-            try {
-                in = new DataInputStream(jugador.getInputStream());
-                int mensajeJugador = in.readInt();
-                System.out.println(String.format("El jugador 1 respondio: %d",mensajeJugador));
-            } catch (IOException e) {
-                Logger.getLogger(Domino.class.getName()).log(Level.SEVERE, null, e);
+            in = new DataInputStream(jugador.getInputStream());
+            int mensajeJugador = in.readInt();
+            System.out.println(String.format("El jugador 1 respondio: %d",mensajeJugador));
+            switch (mensajeJugador) {
+                case 1:
+                    System.out.println("Esperando que seleccione la ficha el jugador...");
+                    mensajeJugador = in.readInt();
+                    System.out.println("Esperando a que coloque el jugador la ficha...");
+                    String ladoColocacion = in.readUTF();
+                    System.out.println(ladoColocacion);
+                    agregaFicha(mensajeJugador, ladoColocacion);
+                    break;
+                case 2:
+                    System.out.println("El jugador decidio comer una ficha...");
+                    int aleatorio = random.nextInt(fichasParaComer.size());
+                    Ficha ficha = fichasParaComer.get(aleatorio);
+                    fichasParaComer.remove(aleatorio);
+                    fichasJugador1.add(ficha);
+                    System.out.println(String.format("Se comio la ficha correctamente\n toca el turno a la maquina"));
+                    comienzaJuego();
+                    break;
+                case 3:
+                    System.out.println("El jugador se retiro, cerrando juego...");
+                    jugador.close();
+                    break;
             }
-            i++;
-
+            juegoTerminado = true;
+            
+        } catch (IOException e) {
+            Logger.getLogger(Domino.class.getName()).log(Level.SEVERE, null, e);
+        }
             // esperamos a que el cliente decida que hacer
             // int opcion = 0;
             /* switch (opcion) {
@@ -242,6 +259,32 @@ public class Domino {
          */
     } 
 
+    private static void agregaFicha(int i, String s) {
+        if (s.equals("L")) {
+            Ficha fichaAAgregar = fichasJugador1.get(i);
+            fichasJugador1.remove(i);
+            Ficha cabeza = tablero.getFirst();
+            if(fichaAAgregar.getCara2()==cabeza.getCara1()){
+                tablero.addFirst(fichaAAgregar);
+            }else{
+                fichaAAgregar.giraFicha(fichaAAgregar.getCara1(), fichaAAgregar.getCara2());
+                tablero.addFirst(fichaAAgregar);
+            }
+        }
+        if (s.equals("R")) {
+            Ficha fichaAAgregar = fichasJugador1.get(i);
+            fichasJugador1.remove(i);
+            Ficha cola = tablero.getLast();
+            if(fichaAAgregar.getCara1()==cola.getCara2()){
+                tablero.addLast(fichaAAgregar);
+            }else{
+                fichaAAgregar.giraFicha(fichaAAgregar.getCara1(), fichaAAgregar.getCara2());
+                tablero.addLast(fichaAAgregar);
+            }
+        }
+        System.out.println("Se agrego la ficha correctamente");
+        comienzaJuego();
+    }
 
     private static String imprimeTablero(){
         String cadena = "---------- Tablero del domino ----------\n";
